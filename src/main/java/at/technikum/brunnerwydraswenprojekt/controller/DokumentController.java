@@ -2,6 +2,11 @@ package at.technikum.brunnerwydraswenprojekt.controller;
 
 import at.technikum.brunnerwydraswenprojekt.entity.Dokument;
 import at.technikum.brunnerwydraswenprojekt.service.DocumentService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.Parameter;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -26,11 +31,13 @@ public class DokumentController {
         return service.getById(id).orElseThrow();
     }
 
+    @Operation(summary = "Neues Dokument anlegen")
     @PostMapping
     public Dokument create(@RequestBody Dokument dokument) {
         return service.save(dokument);
     }
 
+    @Operation(summary = "Dokument löschen")
     @DeleteMapping("/{id}")
     public void delete(@PathVariable Long id) {
         service.delete(id);
