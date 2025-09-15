@@ -16,4 +16,11 @@ Sprint 1 umfasst:
 - Docker & Docker Compose
 - PostgreSQL-Client (optional, um DB direkt zu testen)
 
+## Protokoll
+- Datenbank aufsetzen Befehle:
+  - Datenbank nach application.yml aufsetzen: docker compose up -d
+  - In Datenbank einloggen: docker exec -it swen_postgres psql -U postgres -d swenprojekt
+
+
+
 
