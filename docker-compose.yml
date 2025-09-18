@@ -11,6 +11,7 @@ services:
       - "5433:5432"                     # Port Mapping (Host:Container)
     volumes:
       - postgres_data:/var/lib/postgresql/data
+      - ./db/init:/docker-entrypoint-initdb.d:ro
     healthcheck:                        # prüft ob DB ready ist
       test: ["CMD-SHELL", "pg_isready -U postgres -d swenprojekt"]
       interval: 5s
