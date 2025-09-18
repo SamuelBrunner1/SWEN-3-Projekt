@@ -13,17 +13,20 @@ public class Dokument {
     private String titel; //spalte
     private String inhalt; //spalte
 
-    // Konstruktoren
-    public Dokument() {}
-    public Dokument(String titel, String inhalt) {
-        this.titel = titel;
-        this.inhalt = inhalt;
-    }
+    // Konstruktoren überflüssig weil in DTO
+    // public Dokument() {}
+    //public Dokument(String titel, String inhalt) {
+    //    this.titel = titel;
+    //    this.inhalt = inhalt;
+    //}
 
     // Getter & Setter
     public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
+
     public String getTitel() { return titel; }
     public void setTitel(String titel) { this.titel = titel; }
+
     public String getInhalt() { return inhalt; }
     public void setInhalt(String inhalt) { this.inhalt = inhalt; }
 }
