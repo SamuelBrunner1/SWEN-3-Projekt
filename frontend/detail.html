@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document Details</title>
+</head>
+<body>
+<h1>Document Details</h1>
+<div id="detail"></div>
+
+<script>
+    async function loadDetail() {
+        const params = new URLSearchParams(window.location.search);
+        const id = params.get("id");
+
+        const response = await fetch(`http://localhost:8082/api/dokumente/${id}`);
+        const doc = await response.json();
+
+        document.getElementById("detail").innerHTML =
+            `<h2>${doc.titel}</h2><p>${doc.inhalt}</p>`;
+    }
+
+    loadDetail();
+</script>
+</body>
+</html>
