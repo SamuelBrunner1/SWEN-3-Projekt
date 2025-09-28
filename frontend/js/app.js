@@ -1,38 +1,62 @@
+// Dokumente vom Server laden und anzeigen
 async function loadDocuments() {
-    const response = await fetch("/api/dokumente");
-    const data = await response.json();
+    try {
+        const response = await fetch("/api/dokumente");
+        if (!response.ok) throw new Error("Fehler beim Laden der Dokumente");
 
-    const container = document.getElementById("dokumente");
-    container.innerHTML = "";
+        const data = await response.json();
 
-    data.forEach(doc => {
-        const div = document.createElement("div");
-        div.innerHTML = `<a href="detail.html?id=${doc.id}">${doc.titel}</a>`;
-        container.appendChild(div);
-    });
+        const container = document.getElementById("dokumente");
+        container.innerHTML = "";
+
+        if (data.length === 0) {
+            container.innerText = "Keine Dokumente vorhanden.";
+        } else {
+            data.forEach(doc => {
+                const div = document.createElement("div");
+                div.innerHTML = `<a href="detail.html?id=${doc.id}">${doc.titel}</a>`;
+                container.appendChild(div);
+            });
+        }
+    } catch (error) {
+        console.error("Ladefehler:", error);
+        document.getElementById("dokumente").innerText = "Fehler beim Laden der Dokumente.";
+    }
 }
 
-loadDocuments();
-
+// Neues Dokument per Formular hochladen
 document.getElementById("uploadForm").addEventListener("submit", async function (e) {
     e.preventDefault();
 
     const titel = document.getElementById("titel").value;
     const inhalt = document.getElementById("inhalt").value;
 
-    const response = await fetch("/api/dokumente", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ titel, inhalt })
-    });
+    try {
+        const response = await fetch("/api/dokumente", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ titel, inhalt })
+        });
 
-    if (response.ok) {
-        document.getElementById("uploadMessage").innerText = "Dokument erfolgreich hochgeladen!";
-        document.getElementById("uploadForm").reset();
-        loadDocuments(); // Liste neu laden
-    } else {
-        document.getElementById("uploadMessage").innerText = "Fehler beim Hochladen!";
+        const result = await response.text();  // Antwort zur Debug-Analyse
+        console.log("Status:", response.status);
+        console.log("Antwort:", result);
+
+        if (response.ok) {
+            document.getElementById("uploadMessage").innerText = "Dokument erfolgreich hochgeladen!";
+            document.getElementById("uploadForm").reset();
+            loadDocuments();
+        } else {
+            document.getElementById("uploadMessage").innerText = "Fehler beim Hochladen: " + result;
+        }
+
+    } catch (error) {
+        console.error("Fehler beim POST:", error);
+        document.getElementById("uploadMessage").innerText = "Netzwerkfehler beim Hochladen.";
     }
 });
+
+// Beim Laden der Seite Dokumente anzeigen
+loadDocuments();
