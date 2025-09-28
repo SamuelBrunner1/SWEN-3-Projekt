@@ -1,0 +1,56 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 2rem;
+    background-color: #f8f9fa;
+    color: #212529;
+}
+
+h1, h2 {
+    color: #343a40;
+}
+
+form {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+input[type="text"] {
+    padding: 0.5rem;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    width: 200px;
+}
+
+button {
+    padding: 0.5rem 1rem;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    font-weight: bold;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+#uploadMessage {
+    margin-top: 0.5rem;
+    color: green;
+}
+
+ul {
+    list-style: none;
+    padding: 0;
+}
+
+li {
+    background: white;
+    margin-bottom: 0.5rem;
+    padding: 1rem;
+    border-radius: 5px;
+    border: 1px solid #dee2e6;
+}

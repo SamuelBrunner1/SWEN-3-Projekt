@@ -10,7 +10,7 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
     ports:
-      - "5433:5432"                     # Host-Port 5433 → Container 5432
+      - "5433:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./db/init:/docker-entrypoint-initdb.d:ro
@@ -33,7 +33,7 @@ services:
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: postgres
     ports:
-      - "8082:8082"
+      - "8082:8080"
 
   frontend:
     build:
@@ -44,8 +44,10 @@ services:
       - app
     ports:
       - "80:80"
-    volumes:
-      - ./frontend:/usr/share/nginx/html:ro
 
 volumes:
   postgres_data:
+
+networks:
+  default:
+    name: swen_net
