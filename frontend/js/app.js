@@ -10,14 +10,28 @@ async function loadDocuments() {
         container.innerHTML = "";
 
         if (data.length === 0) {
-            container.innerText = "Keine Dokumente vorhanden.";
+            container.innerHTML = `<div class="alert alert-info">Keine Dokumente vorhanden.</div>`;
         } else {
-            data.forEach(doc => {
+            data.forEach((doc, index) => {
                 const div = document.createElement("div");
-                div.innerHTML = `<a href="detail.html?id=${doc.id}">${doc.titel}</a>`;
+                div.className = `p-3 border rounded mb-2 ${index % 2 === 0 ? "bg-light" : "bg-white"}`;
+                div.innerHTML = `
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h5 class="mb-1">
+                        <a href="detail.html?id=${doc.id}" class="text-decoration-none text-dark">
+                            ${doc.titel}
+                        </a>
+                    </h5>
+                    <small class="text-muted">ID: ${doc.id}</small>
+                </div>
+                <a href="detail.html?id=${doc.id}" class="btn btn-sm btn-outline-primary">Öffnen</a>
+            </div>
+        `;
                 container.appendChild(div);
             });
         }
+
     } catch (error) {
         console.error("Ladefehler:", error);
         document.getElementById("dokumente").innerText = "Fehler beim Laden der Dokumente.";

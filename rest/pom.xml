@@ -9,10 +9,10 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>at.technikum</groupId>
-    <artifactId>SWEN_BRUNNER_WYDRA</artifactId>
+    <artifactId>rest</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>SWEN_BRUNNER_WYDRA</name>
-    <description>SWEN_BRUNNER_WYDRA</description>
+    <name>rest</name>
+    <description>rest</description>
     <url/>
     <licenses>
         <license/>

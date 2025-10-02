@@ -1,5 +1,3 @@
-version: "3.9"
-
 services:
   postgres:
     image: postgres:15
@@ -22,7 +20,7 @@ services:
 
   app:
     build:
-      context: .
+      context: ./rest
       dockerfile: Dockerfile
     container_name: swen_app
     depends_on:
