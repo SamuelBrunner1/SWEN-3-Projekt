@@ -12,14 +12,14 @@ async function loadDocuments() {
         if (data.length === 0) {
             container.innerHTML = `<div class="alert alert-info">Keine Dokumente vorhanden.</div>`;
         } else {
-            data.forEach((doc, index) => {
+            data.forEach((doc) => {
                 const div = document.createElement("div");
-                div.className = `p-3 border rounded mb-2 ${index % 2 === 0 ? "bg-light" : "bg-white"}`;
+                div.className = "p-3 border rounded mb-2 bg-white shadow-sm";
                 div.innerHTML = `
             <div class="d-flex justify-content-between align-items-center">
                 <div>
                     <h5 class="mb-1">
-                        <a href="detail.html?id=${doc.id}" class="text-decoration-none text-dark">
+                        <a href="detail.html?id=${doc.id}" class="text-decoration-none text-dark fw-bold">
                             ${doc.titel}
                         </a>
                     </h5>
