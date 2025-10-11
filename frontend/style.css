@@ -54,3 +54,12 @@ li {
     border-radius: 5px;
     border: 1px solid #dee2e6;
 }
+
+#detail {
+    background: white;
+    padding: 1rem;
+    border-radius: 5px;
+    border: 1px solid #dee2e6;
+    margin-top: 1rem;
+    max-width: 600px;
+}

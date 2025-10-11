@@ -28,6 +28,8 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+      rabbitmq:
+        condition: service_started
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/swenprojekt
       SPRING_DATASOURCE_USERNAME: postgres
@@ -45,9 +47,15 @@ services:
     ports:
       - "80:80"
 
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: swen_rabbitmq
+    ports:
+      - "5672:5672"       # Für App-Kommunikation
+      - "15672:15672"     # Für RabbitMQ UI
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+
 volumes:
   postgres_data:
-
-networks:
-  default:
-    name: swen_net
