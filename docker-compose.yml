@@ -2,6 +2,7 @@ services:
   postgres:
     image: postgres:15
     container_name: swen_postgres
+    hostname: postgres
     restart: always
     environment:
       POSTGRES_DB: swenprojekt
@@ -26,10 +27,16 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+      rabbitmq:
+        condition: service_started
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/swenprojekt
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: postgres
+      SPRING_RABBITMQ_HOST: rabbitmq
+      SPRING_RABBITMQ_PORT: 5672
+      SPRING_RABBITMQ_USERNAME: guest
+      SPRING_RABBITMQ_PASSWORD: guest
     ports:
       - "8082:8080"
 
@@ -42,6 +49,29 @@ services:
       - app
     ports:
       - "80:80"
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: swen_rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+
+  worker:
+    build:
+      context: ./ocr-worker
+      dockerfile: Dockerfile
+    container_name: swen_worker
+    depends_on:
+      - rabbitmq
+    environment:
+      SPRING_RABBITMQ_HOST: rabbitmq
+      SPRING_RABBITMQ_PORT: 5672
+      SPRING_RABBITMQ_USERNAME: guest
+      SPRING_RABBITMQ_PASSWORD: guest
 
 volumes:
   postgres_data:

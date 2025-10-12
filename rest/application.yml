@@ -3,7 +3,7 @@ spring:
     name: Brunner-Wydra-SwenProjekt
 
   datasource:
-    url: jdbc:postgresql://localhost:5433/swenprojekt
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5433/swenprojekt}
     username: postgres
     password: postgres
     driver-class-name: org.postgresql.Driver
@@ -16,6 +16,12 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         format_sql: true
+
+  rabbitmq: ## neu, noch nicht getestet ##
+    host: rabbitmq
+    port: 5672
+    username: guest
+    password: guest
 
 server:
   port: 8082
