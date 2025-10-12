@@ -1,0 +1,33 @@
+version: '3.9'
+
+services:
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    environment:
+      RABBITMQ_DEFAULT_USER: myuser
+      RABBITMQ_DEFAULT_PASS: secret
+    ports:
+      - "5672:5672"     # Port für AMQP
+      - "15672:15672"   # Port für das Management-UI
+    networks:
+      - default
+
+  ocr-worker:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: ocr-worker
+    depends_on:
+      - rabbitmq
+    environment:
+      SPRING_RABBITMQ_HOST: rabbitmq
+      SPRING_RABBITMQ_PORT: 5672
+      SPRING_RABBITMQ_USERNAME: myuser
+      SPRING_RABBITMQ_PASSWORD: secret
+    networks:
+      - default
+
+networks:
+  default:
+    name: swen_network
