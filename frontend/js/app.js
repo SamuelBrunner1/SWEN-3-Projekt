@@ -25,7 +25,12 @@ async function loadDocuments() {
                     </h5>
                     <small class="text-muted">ID: ${doc.id}</small>
                 </div>
-                <a href="detail.html?id=${doc.id}" class="btn btn-sm btn-outline-primary">Öffnen</a>
+                <div class="btn-group">
+                    <a href="detail.html?id=${doc.id}" class="btn btn-sm btn-outline-primary">Öffnen</a>
+                    <button class="btn btn-sm btn-outline-danger" onclick="deleteDocument(${doc.id})">
+                        Löschen
+                    </button>
+                </div>
             </div>
         `;
                 container.appendChild(div);
@@ -35,6 +40,25 @@ async function loadDocuments() {
     } catch (error) {
         console.error("Ladefehler:", error);
         document.getElementById("dokumente").innerText = "Fehler beim Laden der Dokumente.";
+    }
+}
+
+// Dokument löschen
+async function deleteDocument(id) {
+    if (!confirm(`Dokument #${id} wirklich löschen?`)) return;
+
+    try {
+        const response = await fetch(`/api/dokumente/${id}`, { method: "DELETE" });
+        if (response.ok) {
+            alert(`Dokument #${id} gelöscht.`);
+            loadDocuments(); // Liste neu laden
+        } else {
+            const msg = await response.text();
+            alert(`Fehler beim Löschen: ${msg}`);
+        }
+    } catch (error) {
+        console.error("Fehler beim Löschen:", error);
+        alert("Netzwerkfehler beim Löschen des Dokuments.");
     }
 }
 
