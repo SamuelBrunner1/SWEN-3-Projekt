@@ -2,6 +2,5 @@
 
 # Anleitung
 - `docker compose build`
-- `docker compose up -d`
-- `docker exec -it swen_postgres psql -U postgres -d swenprojekt`
+- `docker compose up`
 - http://localhost:8082/api/dokumente
