@@ -1,6 +1,6 @@
 services:
   postgres:
-    image: postgres:15
+    image: postgres:15 # change postgres to version 18 alpine - besser
     container_name: swen_postgres
     hostname: postgres
     restart: always
@@ -51,7 +51,7 @@ services:
       - "80:80"
 
   rabbitmq:
-    image: rabbitmq:3-management
+    image: rabbitmq:3-management # change to rabbitmq:4-alpine-management - ist ressourcenschoneneder
     container_name: swen_rabbitmq
     ports:
       - "5672:5672"
