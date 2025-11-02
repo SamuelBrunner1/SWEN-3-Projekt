@@ -19,6 +19,34 @@ services:
       timeout: 3s
       retries: 10
 
+  rabbitmq:
+    image: rabbitmq:4-alpine-management
+    container_name: swen_rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+
+  minio:
+    image: minio/minio:latest
+    container_name: swen_minio
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin
+    ports:
+      - "9000:9000"  # S3 API
+      - "9001:9001"  # Web Console
+    volumes:
+      - minio_data:/data
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:9000/minio/health/live" ]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
   app:
     build:
       context: ./rest
@@ -29,6 +57,8 @@ services:
         condition: service_healthy
       rabbitmq:
         condition: service_started
+      minio:
+        condition: service_healthy
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/swenprojekt
       SPRING_DATASOURCE_USERNAME: postgres
@@ -37,6 +67,10 @@ services:
       SPRING_RABBITMQ_PORT: 5672
       SPRING_RABBITMQ_USERNAME: guest
       SPRING_RABBITMQ_PASSWORD: guest
+      MINIO_ENDPOINT: http://minio:9000
+      MINIO_ACCESS_KEY: minioadmin
+      MINIO_SECRET_KEY: minioadmin
+      MINIO_BUCKET: documents
     ports:
       - "8082:8080"
 
@@ -50,31 +84,30 @@ services:
     ports:
       - "80:80"
 
-  rabbitmq:
-    image: rabbitmq:3-management # change to rabbitmq:4-alpine-management - ist ressourcenschoneneder
-    container_name: swen_rabbitmq
-    ports:
-      - "5672:5672"
-      - "15672:15672"
-    environment:
-      RABBITMQ_DEFAULT_USER: guest
-      RABBITMQ_DEFAULT_PASS: guest
-
   worker:
     build:
       context: ./ocr-worker
       dockerfile: Dockerfile
     container_name: swen_worker
     depends_on:
-      - rabbitmq
+      rabbitmq:
+        condition: service_started
+      minio:
+        condition: service_healthy
     environment:
       SPRING_RABBITMQ_HOST: rabbitmq
       SPRING_RABBITMQ_PORT: 5672
       SPRING_RABBITMQ_USERNAME: guest
       SPRING_RABBITMQ_PASSWORD: guest
+      MINIO_ENDPOINT: http://minio:9000
+      MINIO_ACCESS_KEY: minioadmin
+      MINIO_SECRET_KEY: minioadmin
+      MINIO_BUCKET: documents
+      TESSERACT_LANGS: deu+eng
 
 volumes:
   postgres_data:
+  minio_data:
 
 networks:
   default:
