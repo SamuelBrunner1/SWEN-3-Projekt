@@ -23,7 +23,8 @@
     <div class="card shadow-sm">
         <div class="card-body">
             <h2 class="card-title h4" id="detail-title">Lade Titel...</h2>
-            <p class="card-text" id="detail-content">Lade Inhalt...</p>
+            <p class="card-text mb-1"><strong>ID:</strong> <span id="detail-id">–</span></p>
+            <p class="card-text"><strong>MinIO-Key:</strong> <span id="detail-key">–</span></p>
         </div>
     </div>
 
@@ -45,9 +46,14 @@
         const id = params.get("id");
         currentId = id;
 
+        const titleEl = document.getElementById("detail-title");
+        const idEl = document.getElementById("detail-id");
+        const keyEl = document.getElementById("detail-key");
+
         if (!id) {
-            document.getElementById("detail-title").innerText = "Fehler";
-            document.getElementById("detail-content").innerText = "Keine Dokument-ID angegeben.";
+            titleEl.innerText = "Fehler";
+            idEl.innerText = "–";
+            keyEl.innerText = "Keine Dokument-ID angegeben.";
             return;
         }
 
@@ -56,26 +62,26 @@
             if (!response.ok) throw new Error("Fehler beim Laden");
 
             const doc = await response.json();
-            document.getElementById("detail-title").innerText = doc.titel;
-            document.getElementById("detail-content").innerText = doc.inhalt;
+            titleEl.innerText = doc.titel ?? "(ohne Titel)";
+            idEl.innerText = doc.id ?? "-";
+            keyEl.innerText = doc.dateiname ?? "(kein Key)";
         } catch (err) {
-            document.getElementById("detail-title").innerText = "Fehler";
-            document.getElementById("detail-content").innerText = "Das Dokument konnte nicht geladen werden.";
+            titleEl.innerText = "Fehler";
+            idEl.innerText = id;
+            keyEl.innerText = "Das Dokument konnte nicht geladen werden.";
             console.error(err);
         }
     }
 
-    // Dokument löschen
     async function deleteDocument() {
         if (!currentId) return;
-        const confirmed = confirm("Willst du dieses Dokument wirklich löschen?");
-        if (!confirmed) return;
+        if (!confirm("Willst du dieses Dokument wirklich löschen?")) return;
 
         try {
             const response = await fetch(`/api/dokumente/${currentId}`, { method: "DELETE" });
             if (response.ok) {
                 alert("Dokument erfolgreich gelöscht.");
-                window.location.href = "index.html"; // zurück zur Übersicht
+                window.location.href = "index.html";
             } else {
                 const msg = await response.text();
                 alert("Fehler beim Löschen: " + msg);
@@ -87,7 +93,6 @@
     }
 
     document.getElementById("deleteButton").addEventListener("click", deleteDocument);
-
     loadDetail();
 </script>
 </body>

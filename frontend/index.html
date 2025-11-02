@@ -27,15 +27,16 @@
         <div class="col-md-6 col-lg-5">
             <div class="card shadow-sm">
                 <div class="card-body">
-                    <h2 class="h4 mb-3 text-center">Neues Dokument anlegen</h2>
-                    <form id="uploadForm" class="d-flex flex-column align-items-center gap-3">
-                        <input type="text" id="titel" class="form-control w-75" placeholder="Titel" required>
-                        <input type="text" id="inhalt" class="form-control w-75" placeholder="Inhalt" required>
+                    <h2 class="h4 mb-3 text-center">PDF hochladen</h2>
+
+                    <form id="uploadForm" class="d-flex flex-column align-items-center gap-3" enctype="multipart/form-data">
+                        <input type="file" id="file" class="form-control w-75" accept="application/pdf" required>
                         <div class="col-12 text-center">
                             <button type="submit" class="btn btn-success text-white">+ Hochladen</button>
                         </div>
                     </form>
-                    <p id="uploadMessage" class="mt-3 text-success text-center"></p>
+
+                    <p id="uploadMessage" class="mt-3 text-center"></p>
                 </div>
             </div>
         </div>

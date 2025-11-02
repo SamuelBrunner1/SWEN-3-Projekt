@@ -1,126 +1,118 @@
-// 🔹 Hilfsfunktion: JSON-Fehler oder Text extrahieren
+// ---- Helpers ---------------------------------------------------------------
 async function parseErrorResponse(response) {
     try {
-        const contentType = response.headers.get("content-type");
-        if (contentType && contentType.includes("application/json")) {
+        const ct = response.headers.get("content-type") || "";
+        if (ct.includes("application/json")) {
             const err = await response.json();
             return err.error || err.message || JSON.stringify(err);
-        } else {
-            return await response.text();
         }
+        return await response.text();
     } catch {
         return "Unbekannter Fehler beim Verarbeiten der Antwort.";
     }
 }
 
-// 🔹 Dokumente vom Server laden und anzeigen
+function escapeHtml(s) {
+    return (s || "").replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+}
+
+// ---- Dokumente laden -------------------------------------------------------
 async function loadDocuments() {
     const container = document.getElementById("dokumente");
     container.innerHTML = `<div class="alert alert-secondary">Lade Dokumente...</div>`;
 
     try {
         const response = await fetch("/api/dokumente");
-        if (!response.ok) {
-            const msg = await parseErrorResponse(response);
-            throw new Error(msg);
-        }
+        if (!response.ok) throw new Error(await parseErrorResponse(response));
 
         const data = await response.json();
-        container.innerHTML = "";
-
         if (!data || data.length === 0) {
             container.innerHTML = `<div class="alert alert-info">Keine Dokumente vorhanden.</div>`;
             return;
         }
 
-        data.forEach((doc) => {
-            const div = document.createElement("div");
-            div.className = "p-3 border rounded mb-2 bg-white shadow-sm";
-            div.innerHTML = `
-                <div class="d-flex justify-content-between align-items-center">
-                    <div>
-                        <h5 class="mb-1">
-                            <a href="detail.html?id=${doc.id}" class="text-decoration-none text-dark fw-bold">
-                                ${doc.titel}
-                            </a>
-                        </h5>
-                        <small class="text-muted">ID: ${doc.id}</small>
-                    </div>
-                    <div class="btn-group">
-                        <a href="detail.html?id=${doc.id}" class="btn btn-sm btn-outline-primary">Öffnen</a>
-                        <button class="btn btn-sm btn-outline-danger" onclick="deleteDocument(${doc.id})">
-                            Löschen
-                        </button>
-                    </div>
-                </div>
-            `;
-            container.appendChild(div);
-        });
+        container.innerHTML = data.map(doc => `
+      <div class="p-3 border rounded mb-2 bg-white shadow-sm">
+        <div class="d-flex justify-content-between align-items-center">
+          <div class="me-3">
+            <h5 class="mb-1">
+              <a href="detail.html?id=${doc.id}" class="text-decoration-none text-dark fw-bold">
+                ${escapeHtml(doc.titel ?? "(ohne Titel)")}
+              </a>
+            </h5>
+            <small class="text-muted">ID: ${doc.id}</small><br>
+            <small class="text-muted">Key: ${escapeHtml(doc.dateiname ?? "(kein Key)")}</small>
+          </div>
+          <div class="btn-group">
+            <a href="detail.html?id=${doc.id}" class="btn btn-sm btn-outline-primary">Öffnen</a>
+            <button class="btn btn-sm btn-outline-danger" onclick="deleteDocument(${doc.id})">Löschen</button>
+          </div>
+        </div>
+      </div>
+    `).join("");
 
     } catch (error) {
         console.error("Ladefehler:", error);
-        container.innerHTML = `<div class="alert alert-danger">Fehler beim Laden der Dokumente: ${error.message}</div>`;
+        container.innerHTML = `<div class="alert alert-danger">Fehler beim Laden der Dokumente: ${escapeHtml(error.message)}</div>`;
     }
 }
 
-// 🔹 Dokument löschen
+// ---- Dokument löschen ------------------------------------------------------
 async function deleteDocument(id) {
     if (!confirm(`Dokument #${id} wirklich löschen?`)) return;
 
     try {
-        const response = await fetch(`/api/dokumente/${id}`, { method: "DELETE" });
+        const res = await fetch(`/api/dokumente/${id}`, { method: "DELETE" });
+        if (!res.ok) throw new Error(await parseErrorResponse(res));
 
-        if (response.ok) {
-            alert(`Dokument #${id} gelöscht.`);
-            loadDocuments(); // Liste neu laden
-        } else {
-            const msg = await parseErrorResponse(response);
-            alert(`Fehler beim Löschen: ${msg}`);
-        }
+        alert(`Dokument #${id} gelöscht.`);
+        loadDocuments();
     } catch (error) {
         console.error("Fehler beim Löschen:", error);
-        alert("Netzwerkfehler beim Löschen des Dokuments.");
+        alert("Fehler beim Löschen: " + error.message);
     }
 }
 
-// 🔹 Neues Dokument per Formular hochladen
-document.getElementById("uploadForm").addEventListener("submit", async function (e) {
+// ---- Datei-Upload (multipart -> /api/upload) --------------------------------
+document.getElementById("uploadForm").addEventListener("submit", async (e) => {
     e.preventDefault();
-
-    const titel = document.getElementById("titel").value.trim();
-    const inhalt = document.getElementById("inhalt").value.trim();
+    const fileInput = document.getElementById("file");
     const messageBox = document.getElementById("uploadMessage");
 
-    if (!titel || !inhalt) {
+    messageBox.className = "";
+    messageBox.textContent = "";
+
+    const file = fileInput.files[0];
+    if (!file) {
         messageBox.className = "text-danger";
-        messageBox.innerText = "Bitte alle Felder ausfüllen.";
+        messageBox.textContent = "Bitte eine PDF-Datei wählen.";
+        return;
+    }
+    if (!(file.type || "").toLowerCase().includes("pdf")) {
+        messageBox.className = "text-danger";
+        messageBox.textContent = "Nur PDFs werden akzeptiert.";
         return;
     }
 
+    const fd = new FormData();
+    fd.append("file", file);
+
     try {
-        const response = await fetch("/api/dokumente", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ titel, inhalt })
-        });
+        const res = await fetch("/api/upload", { method: "POST", body: fd });
+        if (!res.ok) throw new Error(await parseErrorResponse(res));
 
-        if (response.ok) {
-            messageBox.className = "text-success";
-            messageBox.innerText = "Dokument erfolgreich hochgeladen!";
-            document.getElementById("uploadForm").reset();
-            loadDocuments();
-        } else {
-            const msg = await parseErrorResponse(response);
-            messageBox.className = "text-danger";
-            messageBox.innerText = "Fehler beim Hochladen: " + msg;
-        }
+        const id = await res.json(); // Backend gibt Long-ID
+        messageBox.className = "text-success";
+        messageBox.textContent = `Upload erfolgreich (ID: ${id}).`;
 
+        fileInput.value = "";
+        await loadDocuments();
     } catch (error) {
-        console.error("Fehler beim POST:", error);
+        console.error("Fehler beim Upload:", error);
         messageBox.className = "text-danger";
-        messageBox.innerText = "Netzwerkfehler beim Hochladen.";
+        messageBox.textContent = "Fehler beim Hochladen: " + error.message;
     }
 });
 
-// Beim Laden der Seite Dokumente anzeigen
-loadDocuments();
+// ---- Init ------------------------------------------------------------------
+document.addEventListener("DOMContentLoaded", loadDocuments);
