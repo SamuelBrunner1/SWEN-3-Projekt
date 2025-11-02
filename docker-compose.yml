@@ -20,7 +20,7 @@ services:
       retries: 10
 
   rabbitmq:
-    image: rabbitmq:4-alpine-management
+    image: rabbitmq:3-management
     container_name: swen_rabbitmq
     ports:
       - "5672:5672"

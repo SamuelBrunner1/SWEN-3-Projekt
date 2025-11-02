@@ -4,6 +4,7 @@ public class DocumentDTO {
     private Long id;
     private String titel;
     private String inhalt;
+    private String dateiname;
 
     // Getter, Setter, Konstruktoren
     public DocumentDTO() {}
@@ -14,6 +15,14 @@ public class DocumentDTO {
         this.inhalt = inhalt;
     }
 
+    // Optionaler Konstruktor für Sprint 4
+    public DocumentDTO(Long id, String titel, String inhalt, String dateiname) {
+        this.id = id;
+        this.titel = titel;
+        this.inhalt = inhalt;
+        this.dateiname = dateiname;
+    }
+
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
@@ -22,4 +31,7 @@ public class DocumentDTO {
 
     public String getInhalt() { return inhalt; }
     public void setInhalt(String inhalt) { this.inhalt = inhalt; }
+
+    public String getDateiname() { return dateiname; }
+    public void setDateiname(String dateiname) { this.dateiname = dateiname; }
 }
