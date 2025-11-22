@@ -12,6 +12,7 @@ public class Dokument {
 
     private String titel;
     private String inhalt;
+    private String summary;
 
     // Neues Feld für MinIO-Dateinamen / Objekt-Key
     @Column(name = "dateiname")
@@ -26,6 +27,16 @@ public class Dokument {
 
     public String getInhalt() { return inhalt; }
     public void setInhalt(String inhalt) { this.inhalt = inhalt; }
+
+
+    public String getSummary() {
+        return summary;
+    }
+
+    public void setSummary(String summary) {
+        this.summary = summary;
+    }
+
 
     /**
      * Der eindeutige Dateiname (Objekt-Key) im MinIO-Bucket,

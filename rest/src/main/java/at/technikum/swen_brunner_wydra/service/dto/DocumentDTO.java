@@ -5,6 +5,8 @@ public class DocumentDTO {
     private String titel;
     private String inhalt;
     private String dateiname;
+    private String summary;
+
 
     // Getter, Setter, Konstruktoren
     public DocumentDTO() {}
@@ -34,4 +36,12 @@ public class DocumentDTO {
 
     public String getDateiname() { return dateiname; }
     public void setDateiname(String dateiname) { this.dateiname = dateiname; }
+
+    public String getSummary() {      // NEU
+        return summary;
+    }
+
+    public void setSummary(String summary) {   // NEU
+        this.summary = summary;
+    }
 }

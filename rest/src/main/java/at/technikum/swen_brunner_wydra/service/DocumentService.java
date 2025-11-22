@@ -55,4 +55,12 @@ public class DocumentService {
         }
         repository.deleteById(id);
     }
+    public void updateSummary(Long id, String summary) {
+        Dokument dokument = repository.findById(id)
+                .orElseThrow(() -> new DocumentNotFoundException(id));
+
+        dokument.setSummary(summary);
+        repository.save(dokument);
+    }
+
 }

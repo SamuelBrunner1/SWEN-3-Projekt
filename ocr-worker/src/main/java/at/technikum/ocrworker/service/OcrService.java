@@ -36,6 +36,8 @@ public class OcrService {
      * Lädt das PDF (objectKey) aus MinIO, rendert es per Ghostscript zu PNG-Seiten und OCRt diese mit Tesseract.
      * @return gesamter erkannter Text (alle Seiten).
      */
+
+
     public String ocrPdf(String objectKey) throws Exception {
         Path tmpDir = Files.createTempDirectory("ocr-");
         Path pdfPath = tmpDir.resolve("input.pdf");
