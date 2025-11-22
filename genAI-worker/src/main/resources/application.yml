@@ -1,0 +1,21 @@
+spring:
+  application:
+    name: genai-worker
+  rabbitmq:
+    host: rabbitmq
+    port: 5672
+    username: guest
+    password: guest
+
+genai:
+  api-key: ${OPENAI_API_KEY}
+  model: ${GENAI_MODEL}
+  url: ${GENAI_API_URL}
+
+rest:
+  base-url: ${REST_BASE_URL}
+
+logging:
+  level:
+    root: INFO
+    at.technikum.genaiworker: DEBUG
