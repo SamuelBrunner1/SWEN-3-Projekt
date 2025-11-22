@@ -1,5 +1,6 @@
-package at.technikum.ocrworker.service;
+package at.technikum.ocrworker;
 
+import at.technikum.ocrworker.service.OcrService;
 import io.minio.MinioClient;
 import org.junit.jupiter.api.Test;
 

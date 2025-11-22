@@ -105,6 +105,24 @@ services:
       MINIO_BUCKET: documents
       TESSERACT_LANGS: deu+eng
 
+
+      # GenAI-worker
+  genAI-worker:
+        build:
+          context: ./genAI-worker
+          dockerfile: Dockerfile
+        container_name: swen_genai_worker
+        depends_on:
+          - rabbitmq
+          - app
+        environment:
+          OPENAI_API_KEY: ${OPENAI_API_KEY}
+          GENAI_MODEL: ${GENAI_MODEL}
+          GENAI_API_URL: ${GENAI_API_URL}
+          REST_BASE_URL: ${REST_BASE_URL}
+        networks:
+          - swen_net
+
 volumes:
   postgres_data:
   minio_data:
@@ -112,3 +130,5 @@ volumes:
 networks:
   default:
     name: swen_net
+
+
