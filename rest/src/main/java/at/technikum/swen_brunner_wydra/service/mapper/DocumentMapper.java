@@ -14,7 +14,7 @@ public class DocumentMapper {
                 entity.getInhalt(),
                 entity.getDateiname()
         );
-        dto.setSummary(entity.getSummary());   // NEU
+        dto.setSummary(entity.getSummary());
 
         return dto;
     }

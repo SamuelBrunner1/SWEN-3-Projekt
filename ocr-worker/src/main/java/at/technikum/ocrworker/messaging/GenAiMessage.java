@@ -1,6 +1,8 @@
 package at.technikum.ocrworker.messaging;
 
-public class GenAiMessage {
+import java.io.Serializable;
+
+public class GenAiMessage implements Serializable {
 
     private Long documentId;
     private String ocrText;
@@ -27,5 +29,15 @@ public class GenAiMessage {
 
     public void setOcrText(String ocrText) {
         this.ocrText = ocrText;
+    }
+
+    @Override
+    public String toString() {
+        return "GenAiMessage{" +
+                "documentId=" + documentId +
+                ", ocrText='" + (ocrText != null
+                ? ocrText.substring(0, Math.min(50, ocrText.length())) + "..."
+                : null) + "'" +
+                '}';
     }
 }

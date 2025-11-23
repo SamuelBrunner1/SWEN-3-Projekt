@@ -106,7 +106,6 @@ services:
       TESSERACT_LANGS: deu+eng
 
 
-      # GenAI-worker
   genai-worker:
         build:
           context: ./genAI-worker

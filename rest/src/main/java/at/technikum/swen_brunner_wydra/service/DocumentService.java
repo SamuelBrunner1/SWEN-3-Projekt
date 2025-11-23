@@ -2,6 +2,7 @@ package at.technikum.swen_brunner_wydra.service;
 
 import at.technikum.swen_brunner_wydra.config.RabbitConfig;
 import at.technikum.swen_brunner_wydra.entity.Dokument;
+import at.technikum.swen_brunner_wydra.messaging.OcrRequestMessage;
 import at.technikum.swen_brunner_wydra.repository.DokumentRepository;
 import at.technikum.swen_brunner_wydra.exception.DocumentNotFoundException;
 import at.technikum.swen_brunner_wydra.service.dto.DocumentDTO;
@@ -40,8 +41,12 @@ public class DocumentService {
             Dokument entity = DocumentMapper.toEntity(dto);
             Dokument saved = repository.save(entity);
 
-            // Sende Nachricht an RabbitMQ
-            rabbitTemplate.convertAndSend(RabbitConfig.QUEUE_NAME, saved.getId());
+            OcrRequestMessage msg = new OcrRequestMessage(
+                    saved.getId(),
+                    saved.getDateiname()
+            );
+
+            rabbitTemplate.convertAndSend(RabbitConfig.QUEUE_NAME, msg);
 
             return DocumentMapper.toDto(saved);
         } catch (Exception e) {

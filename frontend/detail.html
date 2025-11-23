@@ -25,6 +25,7 @@
             <h2 class="card-title h4" id="detail-title">Lade Titel...</h2>
             <p class="card-text mb-1"><strong>ID:</strong> <span id="detail-id">–</span></p>
             <p class="card-text"><strong>MinIO-Key:</strong> <span id="detail-key">–</span></p>
+            <p class="card-text"><strong>Summary:</strong> <span id="detail-summary">-</span></p>
         </div>
     </div>
 
@@ -49,11 +50,13 @@
         const titleEl = document.getElementById("detail-title");
         const idEl = document.getElementById("detail-id");
         const keyEl = document.getElementById("detail-key");
+        const summaryEL = document.getElementById("detail-summary")
 
         if (!id) {
             titleEl.innerText = "Fehler";
             idEl.innerText = "–";
             keyEl.innerText = "Keine Dokument-ID angegeben.";
+            summaryEL.innerText = "-";
             return;
         }
 
@@ -65,10 +68,12 @@
             titleEl.innerText = doc.titel ?? "(ohne Titel)";
             idEl.innerText = doc.id ?? "-";
             keyEl.innerText = doc.dateiname ?? "(kein Key)";
+            summaryEL.innerText = doc.summary ?? "-";
         } catch (err) {
             titleEl.innerText = "Fehler";
             idEl.innerText = id;
             keyEl.innerText = "Das Dokument konnte nicht geladen werden.";
+            summaryEL.innerText = "-";
             console.error(err);
         }
     }

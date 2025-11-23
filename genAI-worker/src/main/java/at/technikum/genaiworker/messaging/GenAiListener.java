@@ -1,6 +1,5 @@
 package at.technikum.genaiworker.messaging;
 
-import at.technikum.genaiworker.config.RabbitMqConfig;
 import at.technikum.genaiworker.service.GenAiService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,6 +10,7 @@ import org.springframework.stereotype.Component;
 public class GenAiListener {
 
     private static final Logger log = LoggerFactory.getLogger(GenAiListener.class);
+    public static final String GENAI_QUEUE = "genai-queue";
 
     private final GenAiService genAiService;
 
@@ -18,9 +18,9 @@ public class GenAiListener {
         this.genAiService = genAiService;
     }
 
-    @RabbitListener(queues = RabbitMqConfig.GENAI_QUEUE)
-    public void handle(GenAiMessage message) {
-        log.info("Received GenAI message for document {}.", message.getDocumentId());
+    @RabbitListener(queues = GENAI_QUEUE)
+    public void handleGenAi(GenAiMessage message) {
+        log.info("Received GenAI message: {}", message);
         genAiService.processGenAi(message);
     }
 }

@@ -45,12 +45,11 @@ public class DokumentController {
         service.delete(id);
     }
 
-// NEU: Summary vom GenAI-Worker setzen
-@Operation(summary = "Summary für ein Dokument aktualisieren")
-@PutMapping("/{id}/summary")
-public ResponseEntity<Void> updateSummary(@PathVariable Long id,
-                                          @RequestBody SummaryDTO dto) {
-    service.updateSummary(id, dto.getSummary());
-    return ResponseEntity.noContent().build();
-}
-}
+    @Operation(summary = "Summary für ein Dokument aktualisieren")
+    @PutMapping("/{id}/summary")
+    public ResponseEntity<Void> updateSummary(@PathVariable Long id,
+                                              @RequestBody SummaryDTO dto) {
+        service.updateSummary(id, dto.getSummary());
+        return ResponseEntity.noContent().build();
+    }
+    }

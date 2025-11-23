@@ -11,7 +11,13 @@ public class Dokument {
     private Long id;
 
     private String titel;
+
+    @Lob
+    @Column
     private String inhalt;
+
+    @Lob
+    @Column
     private String summary;
 
     // Neues Feld für MinIO-Dateinamen / Objekt-Key
