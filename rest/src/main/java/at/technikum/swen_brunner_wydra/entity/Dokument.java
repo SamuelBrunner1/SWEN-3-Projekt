@@ -12,15 +12,12 @@ public class Dokument {
 
     private String titel;
 
-    @Lob
-    @Column
+    @Column(columnDefinition = "TEXT")
     private String inhalt;
 
-    @Lob
-    @Column
+    @Column(columnDefinition = "TEXT")
     private String summary;
 
-    // Neues Feld für MinIO-Dateinamen / Objekt-Key
     @Column(name = "dateiname")
     private String dateiname;
 

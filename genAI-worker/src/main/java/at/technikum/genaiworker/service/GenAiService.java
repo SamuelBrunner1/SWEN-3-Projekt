@@ -37,8 +37,7 @@ public class GenAiService {
             // 1) Prompt bauen
             String prompt = """
                     Du erhältst OCR-Text eines Dokuments.
-                    Erstelle eine kurze, gut lesbare Zusammenfassung auf Deutsch.
-                    Konzentriere dich auf den Inhalt (Rechnungen, Beträge, Absender, Datum etc.).
+                    Erstelle eine kurze, prägnante Zusammenfassung auf Deutsch.
                     
                     OCR-Text:
                     %s
