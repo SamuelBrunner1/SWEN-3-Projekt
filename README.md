@@ -25,3 +25,9 @@ PW: minioadmin
 
 ### GitHub Repository
 GitHub: https://github.com/SamuelBrunner1/SWEN-3-Projekt
+
+## Features
+
+### User Login/Registrierung
+User können Profile anlegen
+Jeder User hat nur auf seine eigenen Dokumente Zugriff
