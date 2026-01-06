@@ -1,5 +1,6 @@
 package at.technikum.swen_brunner_wydra.entity;
 
+import at.technikum.swen_brunner_wydra.entity.User;
 import jakarta.persistence.*;
 
 @Entity
@@ -20,6 +21,11 @@ public class Dokument {
 
     @Column(name = "dateiname")
     private String dateiname;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
+
 
     // Getter & Setter
     public Long getId() { return id; }
@@ -52,4 +58,13 @@ public class Dokument {
     public void setDateiname(String dateiname) {
         this.dateiname = dateiname;
     }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
 }

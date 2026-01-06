@@ -17,11 +17,10 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         format_sql: true
 
-  rabbitmq: ## neu, noch nicht getestet ##
+  rabbitmq:
     host: rabbitmq
     port: 5672
     username: guest
     password: guest
 
-server:
-  port: 8082
+

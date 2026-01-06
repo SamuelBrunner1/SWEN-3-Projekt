@@ -71,6 +71,8 @@ services:
       MINIO_ACCESS_KEY: minioadmin
       MINIO_SECRET_KEY: minioadmin
       MINIO_BUCKET: documents
+      APP_JWT_SECRET: "0123456789abcdef0123456789abcdef0123456789abcdef"
+      APP_JWT_EXPIRATIONMINUTES: "1440"
     ports:
       - "8082:8080"
 
