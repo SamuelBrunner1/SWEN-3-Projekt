@@ -10,12 +10,11 @@ import java.util.Optional;
 @Repository
 public interface DokumentRepository extends JpaRepository<Dokument, Long> {
 
-    // Alle Dokumente eines Users
-    List<Dokument> findAllByUserId(Long userId);
+    List<Dokument> findAllByUser_Id(Long userId);
 
-    // Ein Dokument nur laden, wenn es dem User gehört
-    Optional<Dokument> findByIdAndUserId(Long id, Long userId);
+    Optional<Dokument> findByIdAndUser_Id(Long id, Long userId);
 
-    // Löschen nur, wenn es dem User gehört
-    long deleteByIdAndUserId(Long id, Long userId);
+    boolean existsByIdAndUser_Id(Long id, Long userId);
+
+    void deleteByIdAndUser_Id(Long id, Long userId);
 }

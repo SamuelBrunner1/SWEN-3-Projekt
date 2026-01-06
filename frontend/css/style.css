@@ -54,3 +54,15 @@ li {
     border-radius: 5px;
     border: 1px solid #dee2e6;
 }
+
+.card {
+    border-radius: 16px;
+}
+
+.btn-lg {
+    border-radius: 12px;
+}
+
+.navbar {
+    border-bottom: 1px solid rgba(255,255,255,0.15);
+}

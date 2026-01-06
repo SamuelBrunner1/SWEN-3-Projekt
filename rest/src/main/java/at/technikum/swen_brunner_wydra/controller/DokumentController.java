@@ -5,8 +5,10 @@ import at.technikum.swen_brunner_wydra.service.dto.DocumentDTO;
 import at.technikum.swen_brunner_wydra.service.dto.SummaryDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -21,11 +23,15 @@ public class DokumentController {
     }
 
     private Long requireUserId(HttpServletRequest request) {
-        Object userId = request.getAttribute("userId");
-        if (userId == null) {
-            throw new RuntimeException("Unauthorized");
+        Object v = request.getAttribute("userId");
+
+        if (v instanceof Long l) return l;
+        if (v instanceof Integer i) return i.longValue();
+        if (v instanceof String s) {
+            try { return Long.parseLong(s); } catch (NumberFormatException ignored) {}
         }
-        return (Long) userId;
+
+        throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Unauthorized");
     }
 
     @Operation(summary = "Alle Dokumente des eingeloggten Users abrufen")
@@ -40,22 +46,23 @@ public class DokumentController {
         return service.getByIdForUser(id, requireUserId(request));
     }
 
-    @Operation(summary = "Neues Dokument für den User anlegen")
-    @PostMapping
-    public DocumentDTO create(@RequestBody DocumentDTO dto, HttpServletRequest request) {
-        return service.saveForUser(dto, requireUserId(request));
-    }
-
-    @Operation(summary = "Dokument des Users löschen")
+    @Operation(summary = "Dokument löschen (nur eigenes)")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id, HttpServletRequest request) {
         service.deleteForUser(id, requireUserId(request));
         return ResponseEntity.noContent().build();
     }
 
-    @Operation(summary = "Summary für ein Dokument des Users aktualisieren")
+    /**
+     * Optional: Wenn du willst, dass User manuell eine Summary setzen darf,
+     * kannst du diesen Endpoint lassen.
+     *
+     * Aber: für den GenAI-Worker machen wir einen separaten "internal" Endpoint,
+     * weil der keinen JWT Token hat.
+     */
+    @Operation(summary = "Summary manuell setzen (nur eigenes Dokument)")
     @PutMapping("/{id}/summary")
-    public ResponseEntity<Void> updateSummary(
+    public ResponseEntity<Void> updateSummaryForUser(
             @PathVariable Long id,
             @RequestBody SummaryDTO dto,
             HttpServletRequest request
