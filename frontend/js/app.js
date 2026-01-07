@@ -211,6 +211,99 @@ async function loadDocuments() {
     }
 }
 
+// ---- Search ---------------------------------------------------------------
+async function searchDocuments(query) {
+    const resultsHost = document.getElementById("searchResults");
+    const info = document.getElementById("searchInfo");
+    if (!resultsHost) return;
+
+    const q = (query || "").trim();
+    if (!q) {
+        resultsHost.innerHTML = "";
+        if (info) info.textContent = "";
+        return;
+    }
+
+    resultsHost.innerHTML = `<div class="alert alert-secondary">Suche läuft...</div>`;
+    if (info) info.textContent = "";
+
+    try {
+        // Erwarteter Backend Endpoint:
+        // GET /api/search?q=...
+        const res = await apiFetch(`/api/search?q=${encodeURIComponent(q)}`);
+        if (!res.ok) throw new Error(await parseErrorResponse(res));
+
+        const data = await res.json();
+
+        const hits = Array.isArray(data) ? data : (data.hits || []);
+        if (hits.length === 0) {
+            resultsHost.innerHTML = `<div class="alert alert-info">Keine Treffer für "${escapeHtml(q)}".</div>`;
+            if (info) info.textContent = "0 Treffer";
+            return;
+        }
+
+        if (info) info.textContent = `${hits.length} Treffer für "${q}"`;
+
+        resultsHost.innerHTML = hits.map(h => {
+            // Erwartete Felder: id, titel, snippet
+            const id = h.id ?? h.documentId ?? "-";
+            const title = h.titel ?? h.title ?? "(ohne Titel)";
+            const snippet = h.snippet ?? h.preview ?? "";
+
+            return `
+                <div class="col-12">
+                    <div class="p-3 border rounded bg-white shadow-sm">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div class="me-3">
+                                <h5 class="mb-1">
+                                    <a href="detail.html?id=${id}" class="text-decoration-none text-dark fw-bold">
+                                        ${escapeHtml(title)}
+                                    </a>
+                                </h5>
+                                <small class="text-muted">ID: ${escapeHtml(String(id))}</small>
+                                ${snippet ? `<p class="mt-2 mb-0">${escapeHtml(snippet)}</p>` : ""}
+                            </div>
+                            <a href="detail.html?id=${id}" class="btn btn-sm btn-outline-primary">Öffnen</a>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }).join("");
+
+    } catch (err) {
+        console.error("Search error:", err);
+        resultsHost.innerHTML = `<div class="alert alert-danger">Fehler bei der Suche: ${escapeHtml(err.message)}</div>`;
+        if (info) info.textContent = "";
+    }
+}
+
+function wireSearch() {
+    const form = document.getElementById("searchForm");
+    const input = document.getElementById("searchInput");
+    const clearBtn = document.getElementById("searchClearBtn");
+
+    if (!form || !input) return;
+
+    form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        await searchDocuments(input.value);
+    });
+
+    clearBtn?.addEventListener("click", async () => {
+        input.value = "";
+        await searchDocuments("");
+        // Optional: normale Dokumentliste wieder neu laden
+        await loadDocuments();
+    });
+
+    // Optional: live-search mit debounce
+    let t = null;
+    input.addEventListener("input", () => {
+        clearTimeout(t);
+        t = setTimeout(() => searchDocuments(input.value), 350);
+    });
+}
+
 // ---- Dokument löschen ------------------------------------------------------
 async function deleteDocument(id) {
     if (!confirm(`Dokument #${id} wirklich löschen?`)) return;
@@ -347,6 +440,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     registerForm?.addEventListener("submit", handleRegister);
 
     wireUpload();
+    wireSearch();
     await loadDocuments();
     await loadDetailPageIfPresent();
 });
