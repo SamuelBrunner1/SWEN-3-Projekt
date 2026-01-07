@@ -4,6 +4,7 @@ import at.technikum.swen_brunner_wydra.entity.Dokument;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -17,4 +18,7 @@ public interface DokumentRepository extends JpaRepository<Dokument, Long> {
     boolean existsByIdAndUser_Id(Long id, Long userId);
 
     void deleteByIdAndUser_Id(Long id, Long userId);
+
+    List<Dokument> findAllByIdInAndUser_Id(Collection<Long> ids, Long userId);
+
 }

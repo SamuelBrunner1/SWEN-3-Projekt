@@ -31,3 +31,7 @@ GitHub: https://github.com/SamuelBrunner1/SWEN-3-Projekt
 ### User Login/Registrierung
 User können Profile anlegen
 Jeder User hat nur auf seine eigenen Dokumente Zugriff
+
+### Elastic Search
+Geht im frontend nicht, Einträge siehe:
+http://localhost:9200/documents/_search

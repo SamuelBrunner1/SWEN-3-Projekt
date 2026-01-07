@@ -126,7 +126,7 @@ services:
           INTERNAL_API_SECRET: ${INTERNAL_API_SECRET}
 
   elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch:9.2.2
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.18.5
     container_name: swen_elasticsearch
     environment:
       - discovery.type=single-node
