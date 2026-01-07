@@ -1,4 +1,4 @@
-package at.technikum.ocrworker;
+/*package at.technikum.ocrworker;
 
 import at.technikum.ocrworker.messaging.GenAiMessage;
 import at.technikum.ocrworker.messaging.OcrRequestMessage;
@@ -42,4 +42,4 @@ public class RabbitMqListener {
 
         log.info("Sent GenAI message for document {} to queue {}", documentId, GENAI_QUEUE);
     }
-}
+}*/

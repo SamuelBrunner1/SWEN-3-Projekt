@@ -124,6 +124,39 @@ services:
           REST_BASE_URL: ${REST_BASE_URL}
           INTERNAL_API_SECRET: ${INTERNAL_API_SECRET}
 
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.13.4
+    container_name: swen_elasticsearch
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - ES_JAVA_OPTS=-Xms512m -Xmx512m
+    ports:
+      - "9200:9200"
+    healthcheck:
+      test: [ "CMD-SHELL", "curl -fsS http://localhost:9200 >/dev/null || exit 1" ]
+      interval: 10s
+      timeout: 5s
+      retries: 20
+
+  elastic-worker:
+    build:
+      context: ./elastic-worker
+      dockerfile: Dockerfile
+    container_name: swen_elastic_worker
+    depends_on:
+      rabbitmq:
+        condition: service_started
+      elasticsearch:
+        condition: service_healthy
+    environment:
+      SPRING_RABBITMQ_HOST: rabbitmq
+      SPRING_RABBITMQ_PORT: 5672
+      SPRING_RABBITMQ_USERNAME: guest
+      SPRING_RABBITMQ_PASSWORD: guest
+      ELASTICSEARCH_URL: http://elasticsearch:9200
+
+
 
 volumes:
   postgres_data:

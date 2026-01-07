@@ -36,8 +36,11 @@ public class OcrListener {
 
         // 2) Ergebnis an GenAI-Queue schicken
         GenAiMessage genAiMessage = new GenAiMessage(documentId, ocrText);
-        rabbitTemplate.convertAndSend(GENAI_QUEUE, genAiMessage);
-
+        rabbitTemplate.convertAndSend(
+                "paperless.documents",
+                "document.ocr.completed",
+                genAiMessage
+        );
         log.info("Sent GenAI message for document {} to '{}'", documentId, GENAI_QUEUE);
     }
 }
