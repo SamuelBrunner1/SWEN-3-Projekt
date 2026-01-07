@@ -74,6 +74,7 @@ services:
       APP_JWT_SECRET: "0123456789abcdef0123456789abcdef0123456789abcdef"
       APP_JWT_EXPIRATIONMINUTES: "1440"
       APP_INTERNAL_SECRET: ${INTERNAL_API_SECRET}
+      ELASTICSEARCH_URL: http://elasticsearch:9200
     ports:
       - "8082:8080"
 

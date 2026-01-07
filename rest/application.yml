@@ -23,6 +23,9 @@ spring:
     username: guest
     password: guest
 
+  elasticsearch:
+    uris: ${ELASTICSEARCH_URL:http://elasticsearch:9200}
+
 app:
   internal:
     secret: ${INTERNAL_API_SECRET:dev-secret-change-me}
