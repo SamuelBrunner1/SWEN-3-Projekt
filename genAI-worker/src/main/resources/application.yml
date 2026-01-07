@@ -19,3 +19,8 @@ logging:
   level:
     root: INFO
     at.technikum.genaiworker: DEBUG
+
+app:
+  internal:
+    secret: ${INTERNAL_API_SECRET}
+

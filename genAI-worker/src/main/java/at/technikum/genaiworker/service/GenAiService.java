@@ -28,6 +28,9 @@ public class GenAiService {
     @Value("${rest.base-url}")
     private String restBaseUrl;
 
+    @Value("${app.internal.secret}")
+    private String internalSecret;
+
     private final RestTemplate restTemplate = new RestTemplate();
 
     public void processGenAi(GenAiMessage message) {
@@ -76,7 +79,7 @@ public class GenAiService {
             log.info("Received summary for document {}: {}", message.getDocumentId(), summary);
 
             // 4) Summary im REST-Service speichern
-            sendSummaryToRest(message.getDocumentId(), summary);
+            sendSummaryToRestInternal(message.getDocumentId(), summary);
 
         } catch (Exception e) {
             log.error("Fehler bei GenAI-Verarbeitung für Dokument {}: {}",
@@ -95,7 +98,38 @@ public class GenAiService {
         return first.message.content.trim();
     }
 
-    private void sendSummaryToRest(Long documentId, String summary) {
+    private void sendSummaryToRestInternal(Long documentId, String summary) {
+        String url = restBaseUrl + "/internal/dokumente/" + documentId + "/summary";
+
+        Map<String, String> payload = Map.of("summary", summary);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        if (internalSecret == null || internalSecret.isBlank()) {
+            log.error("INTERNAL secret missing: app.internal.secret is not configured in genai-worker");
+            return;
+        }
+        headers.set("X-Internal-Secret", internalSecret);
+
+        HttpEntity<Map<String, String>> entity = new HttpEntity<>(payload, headers);
+
+        ResponseEntity<Void> response = restTemplate.exchange(
+                url,
+                HttpMethod.PUT,
+                entity,
+                Void.class
+        );
+
+        if (response.getStatusCode().is2xxSuccessful()) {
+            log.info("Summary für Dokument {} erfolgreich im REST-Service gespeichert.", documentId);
+        } else {
+            log.error("Konnte Summary für Dokument {} nicht speichern. Status={}",
+                    documentId, response.getStatusCode());
+        }
+    }
+
+    /*private void sendSummaryToRest(Long documentId, String summary) {
         String url = restBaseUrl + "/api/dokumente/" + documentId + "/summary";
 
         Map<String, String> payload = Map.of("summary", summary);
@@ -118,7 +152,7 @@ public class GenAiService {
             log.error("Konnte Summary für Dokument {} nicht speichern. Status={}",
                     documentId, response.getStatusCode());
         }
-    }
+    }*/
 
     // ====== Hilfs-DTOs für OpenAI ======
 

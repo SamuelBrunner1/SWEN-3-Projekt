@@ -15,4 +15,14 @@ public class WebConfig {
         reg.setOrder(1);
         return reg;
     }
+
+    @Bean
+    public FilterRegistrationBean<InternalAuthFilter> internalFilterRegistration(InternalAuthFilter filter) {
+        FilterRegistrationBean<InternalAuthFilter> reg = new FilterRegistrationBean<>();
+        reg.setFilter(filter);
+        reg.addUrlPatterns("/internal/*");
+        reg.setOrder(0); // vor jwtFilter ist ok
+        return reg;
+    }
+
 }
