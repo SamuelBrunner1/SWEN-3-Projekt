@@ -1,6 +1,6 @@
 body {
     font-family: Arial, sans-serif;
-    margin: 2rem;
+    margin: 0;
     background-color: #f8f9fa;
     color: #212529;
 }
@@ -63,6 +63,9 @@ li {
     border-radius: 12px;
 }
 
-.navbar {
-    border-bottom: 1px solid rgba(255,255,255,0.15);
+.nav-link {
+    color: #cfd3da;
+}
+.nav-link:hover {
+    color: #ffffff;
 }
