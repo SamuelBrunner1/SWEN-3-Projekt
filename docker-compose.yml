@@ -157,6 +157,21 @@ services:
       SPRING_RABBITMQ_PASSWORD: guest
       ELASTICSEARCH_URL: http://elasticsearch:9200
 
+  log-batch:
+    build:
+      context: ./log-batch
+      dockerfile: Dockerfile
+    container_name: swen_log_batch
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/swenprojekt
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres
+    volumes:
+      - ./log-batch/input:/app/input
+      - ./log-batch/archive:/app/archive
 
 
 volumes:
