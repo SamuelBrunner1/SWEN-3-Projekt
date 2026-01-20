@@ -166,7 +166,7 @@ class DocumentUploadIT {
         assertThat(objectKey).as("dateiname/objectKey must be present").isNotBlank();
 
         // 4) MinIO: Objekt existiert
-        var stat = minioClient.statObject(
+        StatObjectResponse stat = minioClient.statObject(
                 StatObjectArgs.builder().bucket("documents").object(objectKey).build()
         );
         assertThat(stat.size()).isGreaterThan(0);
